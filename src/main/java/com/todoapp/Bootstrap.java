@@ -34,10 +34,6 @@ public class Bootstrap {
         MongoClient mongoClient = new MongoClient(new ServerAddress(host, port), mongoClientOptions);
         mongoClient.setWriteConcern(WriteConcern.SAFE);
         DB db = mongoClient.getDB(dbname);
-        if (db.authenticate(username, password.toCharArray())) {
-            return db;
-        } else {
-            throw new RuntimeException("Not able to authenticate with MongoDB");
-        }
+        return db;
     }
 }
