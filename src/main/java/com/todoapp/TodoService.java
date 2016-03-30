@@ -1,49 +1,44 @@
 package com.todoapp;
 
-import com.google.gson.Gson;
-import com.mongodb.*;
-import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+
+import com.google.gson.Gson;
+import com.mongodb.MongoClient;
 
 /**
  * Created by shekhargulati on 09/06/14.
  */
 public class TodoService {
 
-    private final DB db;
-    private final DBCollection collection;
-
-    public TodoService(DB db) {
-        this.db = db;
-        this.collection = db.getCollection("todos");
+	private final Morphia morphia;
+    private final Datastore ds;
+ 
+    public TodoService(MongoClient mongoClient, String dbName) {
+        morphia = new Morphia();
+        morphia.map(Todo.class);
+        ds = morphia.createDatastore(mongoClient, dbName);
     }
 
     public List<Todo> findAll() {
-        List<Todo> todos = new ArrayList<>();
-        DBCursor dbObjects = collection.find();
-        while (dbObjects.hasNext()) {
-            DBObject dbObject = dbObjects.next();
-            todos.add(new Todo((BasicDBObject) dbObject));
-        }
+        List<Todo> todos = ds.find(Todo.class).asList();
         return todos;
     }
 
     public void createNewTodo(String body) {
-        Todo todo = new Gson().fromJson(body, Todo.class);
-        collection.insert(new BasicDBObject("title", todo.getTitle()).append("done", todo.isDone()).append("createdOn", new Date()));
+    	Todo todo = new Gson().fromJson(body, Todo.class);
+        ds.save(todo);
     }
-
+ 
     public Todo find(String id) {
-        return new Todo((BasicDBObject) collection.findOne(new BasicDBObject("_id", new ObjectId(id))));
+        return ds.get(Todo.class, id);
     }
-
-    public Todo update(String todoId, String body) {
-        Todo todo = new Gson().fromJson(body, Todo.class);
-        collection.update(new BasicDBObject("_id", new ObjectId(todoId)), new BasicDBObject("$set", new BasicDBObject("done", todo.isDone())));
-        return this.find(todoId);
+ 
+    public Todo update(String body) {
+    	Todo todo = new Gson().fromJson(body, Todo.class);
+        ds.save(todo);
+        return this.find(todo.getId().toString());
     }
 }

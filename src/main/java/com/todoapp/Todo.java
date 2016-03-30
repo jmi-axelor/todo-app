@@ -1,10 +1,10 @@
 package com.todoapp;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
+import java.util.Date;
+
 import org.bson.types.ObjectId;
 
-import java.util.Date;
+import com.mongodb.BasicDBObject;
 
 /**
  * Created by shekhargulati on 09/06/14.
@@ -33,5 +33,9 @@ public class Todo {
 
     public Date getCreatedOn() {
         return createdOn;
+    }
+    
+    public String getId(){
+    	return id;
     }
 }
