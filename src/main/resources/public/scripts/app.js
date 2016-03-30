@@ -152,7 +152,7 @@ app.controller('quizzCtrl', function ($scope, $http, $location) {
     })
     
     $scope.openCat = function (){
-		$location.path('/quizzCat/' + this.cat.name);
+		$location.path('/quizzCat/' + this.cat.id);
 	}
 });
 
@@ -164,17 +164,17 @@ app.controller('quizzCatCtrl', function ($scope, $http, $location, $routeParams)
     })
     
     $scope.openCat = function (){
-		$location.path('/quizzCat/' + this.cat.name);
+		$location.path('/quizzCat/' + this.cat.id);
 	}
 	
 	$scope.playCat = function(){
-		$http.get('/api/v1/playCat/' + $scope.cat.name).success(function (data) {
+		$http.get('/api/v1/playCat/' + $scope.cat.id).success(function (data) {
 	        var id = data;
 	        if(id == "null"){
 	        	$location.path('/noQuestions');
 	        }
 	        else{
-	        	$location.path('/quizzQuest/' + $scope.cat.name);
+	        	$location.path('/quizzQuest/' + $scope.cat.id);
 	        }
 	    }).error(function (data, status) {
 	        console.log('Error ' + data)

@@ -23,9 +23,10 @@ public class Bootstrap {
         setPort(PORT);
         staticFileLocation("/public");
         Sequence questionSequence = new Sequence("QuizzQuestions", 1);
+        Sequence categorySequence = new Sequence("QuizzCategory", 1);
         new ToDoResource(new ToDoService(mongo(), dbname));
         new UserResource(new UserService(mongo(), dbname));
-        QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname);
+        QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname, categorySequence);
         new QuizzCategoryResource(quizzCategoryService);
         new QuizzQuestionResource(new QuizzQuestionService(mongo(), dbname, quizzCategoryService, questionSequence));
     }

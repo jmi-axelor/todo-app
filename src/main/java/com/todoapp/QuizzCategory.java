@@ -11,8 +11,9 @@ import org.mongodb.morphia.annotations.Id;
 
 @Entity
 public class QuizzCategory {
-	private ObjectId id;
+	private ObjectId objectId;
 	@Id
+	private int id;
 	private String name;
 	private Date createdOn = new Date();
 	@Embedded
@@ -22,9 +23,13 @@ public class QuizzCategory {
 		questionsList = new LinkedList<QuizzQuestions>();
 	}
 	
-	public ObjectId getId(){
+	public int getId(){
     	return id;
     }
+	
+	public void setId(int id){
+		this.id = id;
+	}
  
     public String getName() {
         return name;

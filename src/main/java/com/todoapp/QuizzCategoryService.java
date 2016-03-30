@@ -22,11 +22,13 @@ public class QuizzCategoryService {
     
     private final Morphia morphia;
     public final Datastore ds;
+    Sequence categorySequence;
  
-    public QuizzCategoryService(MongoClient mongoClient, String dbName) {
+    public QuizzCategoryService(MongoClient mongoClient, String dbName, Sequence categorySequence) {
         morphia = new Morphia();
         morphia.map(QuizzCategory.class);
         ds = morphia.createDatastore(mongoClient, dbName);
+        this.categorySequence = categorySequence;
     }
  
     public List<QuizzCategory> findAll() {
@@ -35,11 +37,11 @@ public class QuizzCategoryService {
     }
     
     public QuizzCategory find(String id) {
-        return ds.get(QuizzCategory.class, id);
+        return ds.get(QuizzCategory.class, Integer.valueOf(id));
     }
     
     public String findQuestion(String id) {
-    	QuizzCategory cat = ds.get(QuizzCategory.class, id);
+    	QuizzCategory cat = ds.get(QuizzCategory.class, Integer.valueOf(id));
     	if(cat.getQuizzQuestionsList() == null || cat.getQuizzQuestionsList().isEmpty()){
     		return null;
     	}
@@ -53,7 +55,7 @@ public class QuizzCategoryService {
     }
     
     public String findNextQuestion(String id) {
-    	QuizzCategory cat = ds.get(QuizzCategory.class, id);
+    	QuizzCategory cat = ds.get(QuizzCategory.class, Integer.valueOf(id));
     	if(cat.getQuizzQuestionsList() == null || cat.getQuizzQuestionsList().isEmpty()){
     		return null;
     	}
@@ -69,6 +71,7 @@ public class QuizzCategoryService {
     
     public void createNewCat(String body) {
     	QuizzCategory cat = new Gson().fromJson(body, QuizzCategory.class);
+    	cat.setId(categorySequence.getNextValue());
         ds.save(cat);
     }
 }
