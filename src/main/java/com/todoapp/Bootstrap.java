@@ -1,15 +1,16 @@
 package com.todoapp;
-
-import com.mongodb.*;
-
-import static spark.Spark.setIpAddress;
-import static spark.Spark.setPort;
+ 
+import static spark.SparkBase.setIpAddress;
+import static spark.SparkBase.setPort;
 import static spark.SparkBase.staticFileLocation;
 
-/**
- * Created by shekhargulati on 09/06/14.
- */
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
+ 
 public class Bootstrap {
+ 
 	private static final String IP_ADDRESS = System.getenv("OPENSHIFT_DIY_IP") != null ? System.getenv("OPENSHIFT_DIY_IP") : "localhost";
     private static final int PORT = System.getenv("OPENSHIFT_DIY_PORT") != null ? Integer.parseInt(System.getenv("OPENSHIFT_DIY_PORT")) : 8080;
     private static final String dbname = System.getenv("OPENSHIFT_APP_NAME") != null ? System.getenv("OPENSHIFT_APP_NAME") : "todoapp";
@@ -18,7 +19,11 @@ public class Bootstrap {
         setIpAddress(IP_ADDRESS);
         setPort(PORT);
         staticFileLocation("/public");
-        new TodoResource(new TodoService(mongo(), dbname));
+        new ToDoResource(new ToDoService(mongo(), dbname));
+        new UserResource(new UserService(mongo(), dbname));
+        QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname);
+        new QuizzCategoryResource(quizzCategoryService);
+        new QuizzQuestionResource(new QuizzQuestionService(mongo(), dbname, quizzCategoryService));
     }
  
     @SuppressWarnings("deprecation")
