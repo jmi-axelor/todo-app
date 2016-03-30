@@ -19,18 +19,21 @@ public class QuizzQuestionService {
     
     private final Morphia morphia;
     public final Datastore ds;
-    QuizzCategoryService quizzCategoryService;
+    public QuizzCategoryService quizzCategoryService;
+    public Sequence questionSequence;
     
-    public QuizzQuestionService(MongoClient mongoClient, String dbName, QuizzCategoryService quizzCategoryService) {
+    public QuizzQuestionService(MongoClient mongoClient, String dbName, QuizzCategoryService quizzCategoryService, Sequence questionSequence) {
         morphia = new Morphia();
         morphia.map(QuizzQuestions.class);
         ds = morphia.createDatastore(mongoClient, dbName);
         this.quizzCategoryService = quizzCategoryService;
+        this.questionSequence = questionSequence;
     }
  
     public void createNewQuest(String catId, String body) {
     	QuizzCategory category = quizzCategoryService.find(catId);
     	QuizzQuestions quest = new Gson().fromJson(body, QuizzQuestions.class);
+    	quest.setId(questionSequence.getNextValue());
     	HashMap<String,String> map = new Gson().fromJson(body, new TypeToken<HashMap<String, String>>(){}.getType());
     	if(map.containsKey("propositions")){
     		String propositions = map.get("propositions");
@@ -67,7 +70,7 @@ public class QuizzQuestionService {
     	QuizzCategory category = quizzCategoryService.find(catId);
     	QuizzQuestions questSaved = null;
     	for (QuizzQuestions questIt : category.getQuizzQuestionsList()) {
-			if(questIt.getName().equals(questId)){
+			if(questIt.getId() == Integer.valueOf(questId)){
 				questSaved = questIt;
 				break;
 			}

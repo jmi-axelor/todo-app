@@ -225,7 +225,7 @@ app.controller('selectQuestCtrl', function ($scope, $http, $location, $routePara
 	}
     
     $scope.answerQuest = function () {
-        $http.put('/api/v1/updateQuest/' + $scope.catId + '/' +$scope.quest.name, $scope.answerSelected).success(function (data) {
+        $http.put('/api/v1/updateQuest/' + $scope.catId + '/' +$scope.quest.id, $scope.answerSelected).success(function (data) {
             $scope.success = data;
             
         }).error(function (data, status) {
@@ -240,7 +240,12 @@ app.controller('selectQuestCtrl', function ($scope, $http, $location, $routePara
 	        	$location.path('/noQuestions');
 	        }
 	        else{
-	        	$location.path('/quizzQuest/' + $scope.catId);
+	        	$http.get('/api/v1/quest/' + $scope.catId).success(function (data) {
+	                $scope.quest = data;
+	                $scope.success = null;
+	            }).error(function (data, status) {
+	                console.log('Error ' + data)
+	            })
 	        }
 	    }).error(function (data, status) {
 	        console.log('Error ' + data)

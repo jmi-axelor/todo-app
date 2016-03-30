@@ -7,6 +7,8 @@ import org.mongodb.morphia.annotations.Embedded;
 
 @Embedded
 public class QuizzQuestions {
+	
+	private int id;
 	private String name;
 	private Date createdOn = new Date();
 	private String question;
@@ -48,6 +50,14 @@ public class QuizzQuestions {
     
     public void setPropositionsList(List<String> propositionsList){
     	this.propositionsList = propositionsList;
+    }
+    
+    public int getId(){
+    	return id;
+    }
+    
+    public void setId(int id){
+    	this.id = id;
     }
     
 }

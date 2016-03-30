@@ -22,14 +22,14 @@ public class Bootstrap {
         setIpAddress(IP_ADDRESS);
         setPort(PORT);
         staticFileLocation("/public");
+        Sequence questionSequence = new Sequence("QuizzQuestions", 1);
         new ToDoResource(new ToDoService(mongo(), dbname));
         new UserResource(new UserService(mongo(), dbname));
         QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname);
         new QuizzCategoryResource(quizzCategoryService);
-        new QuizzQuestionResource(new QuizzQuestionService(mongo(), dbname, quizzCategoryService));
+        new QuizzQuestionResource(new QuizzQuestionService(mongo(), dbname, quizzCategoryService, questionSequence));
     }
  
-    @SuppressWarnings("deprecation")
 	private static MongoClient mongo() throws Exception {
     	String host = System.getenv("OPENSHIFT_MONGODB_DB_HOST");
         if (host == null) {
