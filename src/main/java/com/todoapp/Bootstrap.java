@@ -6,6 +6,7 @@ import static spark.SparkBase.staticFileLocation;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
  
@@ -34,9 +35,12 @@ public class Bootstrap {
             return mongoClient;
         }
         int port = Integer.parseInt(System.getenv("OPENSHIFT_MONGODB_DB_PORT"));
+        String username = System.getenv("OPENSHIFT_MONGODB_DB_USERNAME");
+        String password = System.getenv("OPENSHIFT_MONGODB_DB_PASSWORD");
         MongoClientOptions mongoClientOptions = MongoClientOptions.builder().build();
         MongoClient mongoClient = new MongoClient(new ServerAddress(host, port), mongoClientOptions);
         mongoClient.setWriteConcern(WriteConcern.SAFE);
+        MongoCredential credential = MongoCredential.createMongoCRCredential(username, dbname, password.toCharArray());
         return mongoClient;
     }
 }
