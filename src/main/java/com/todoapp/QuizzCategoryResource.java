@@ -35,7 +35,7 @@ public class QuizzCategoryResource {
         
         get(API_CONTEXT + "/playCat/:id", "application/json", new Route() {
             public Object handle(Request request, Response response) { 
-            	return quizzCategoryService.findQuestion(request.params(":id"));
+            	return quizzCategoryService.findNextQuestion(request.params(":id"));
             }
         }, new JsonTransformer());
         
@@ -49,6 +49,14 @@ public class QuizzCategoryResource {
             public Object handle(Request request, Response response) {
             	quizzCategoryService.createNewCat(request.body());
 	            response.status(201);
+	            return response;
+            }
+        }, new JsonTransformer());
+        
+        put(API_CONTEXT + "/restartCat/:id", "application/json", new Route() {
+            public Object handle(Request request, Response response) { 
+            	quizzCategoryService.restart(request.params(":id"));
+            	response.status(201);
 	            return response;
             }
         }, new JsonTransformer());

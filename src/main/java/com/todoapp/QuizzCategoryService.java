@@ -40,32 +40,18 @@ public class QuizzCategoryService {
         return ds.get(QuizzCategory.class, Integer.valueOf(id));
     }
     
-    public String findQuestion(String id) {
+    public int findNextQuestion(String id) {
     	QuizzCategory cat = ds.get(QuizzCategory.class, Integer.valueOf(id));
     	if(cat.getQuizzQuestionsList() == null || cat.getQuizzQuestionsList().isEmpty()){
-    		return null;
-    	}
-    	else{
-    		for (QuizzQuestions question : cat.getQuizzQuestionsList()) {
-				question.setDone(false);
-			}
-    		ds.save(cat);
-    		return cat.getName();
-    	}
-    }
-    
-    public String findNextQuestion(String id) {
-    	QuizzCategory cat = ds.get(QuizzCategory.class, Integer.valueOf(id));
-    	if(cat.getQuizzQuestionsList() == null || cat.getQuizzQuestionsList().isEmpty()){
-    		return null;
+    		return 0;
     	}
     	else{
     		for (QuizzQuestions question : cat.getQuizzQuestionsList()) {
 				if(!question.getDone()){
-					return cat.getName();
+					return cat.getId();
 				}
 			}
-    		return null;
+    		return 0;
     	}
     }
     
@@ -88,6 +74,17 @@ public class QuizzCategoryService {
     							.divide(new BigDecimal(cat.getQuizzQuestionsList().size()), 2, RoundingMode.HALF_UP);
     	}
     	cat.setPercentageDone(percentage);
+    }
+    
+    public void restart(String catId){
+    	QuizzCategory category = this.find(catId);
+    	category.setPercentageDone(BigDecimal.ZERO);
+    	ds.save(category);
+    	while(ds.find(QuizzCategory.class).filter("questionsList.done", true).field("_id").equal(Integer.valueOf(catId)).get() != null){
+    		ds.update(ds.createQuery(QuizzCategory.class).filter("questionsList.done", true).field("_id").equal(Integer.valueOf(catId)),
+    				ds.createUpdateOperations(QuizzCategory.class).disableValidation().set("questionsList.$.done", false));
+    	}
+    	
     }
     
     public void delete(String catId){
