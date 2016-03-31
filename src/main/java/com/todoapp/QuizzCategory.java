@@ -18,6 +18,7 @@ public class QuizzCategory {
 	private String name;
 	private Date createdOn = new Date();
 	private BigDecimal percentageDone = BigDecimal.ZERO;
+	private int score = 0;
 	@Embedded
 	private List<QuizzQuestions> questionsList;
 	
@@ -51,5 +52,13 @@ public class QuizzCategory {
     
     public void setPercentageDone(BigDecimal percentageDone){
     	this.percentageDone = percentageDone;
+    }
+    
+    public int getScore(){
+    	return score;
+    }
+    
+    public void setScore(int score){
+    	this.score = score;
     }
 }

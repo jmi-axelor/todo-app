@@ -76,11 +76,16 @@ public class QuizzQuestionService {
     	if(questSaved != null){
     		questSaved.setDone(true);
     		quizzCategoryService.computePercentageDone(category);
-    		quizzCategoryService.ds.save(category);
+    		
         	if(answer.equals(questSaved.getResponse())){
+        		category.setScore(category.getScore() + 1);
+        		quizzCategoryService.ds.save(category);
         		return true;
         	}
-        	else return false;
+        	else {
+        		quizzCategoryService.ds.save(category);
+        		return false;
+        	}
     	}
     	return false;
     }

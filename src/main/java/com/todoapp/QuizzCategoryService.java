@@ -79,6 +79,7 @@ public class QuizzCategoryService {
     public void restart(String catId){
     	QuizzCategory category = this.find(catId);
     	category.setPercentageDone(BigDecimal.ZERO);
+    	category.setScore(0);
     	ds.save(category);
     	while(ds.find(QuizzCategory.class).filter("questionsList.done", true).field("_id").equal(Integer.valueOf(catId)).get() != null){
     		ds.update(ds.createQuery(QuizzCategory.class).filter("questionsList.done", true).field("_id").equal(Integer.valueOf(catId)),

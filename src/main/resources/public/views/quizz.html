@@ -7,6 +7,8 @@
             Name
         </th>
         <th>Progress</th>
+        <th>Score</th>
+        <th align="right" width="1%"></th>
         <th align="right" width="1%">
         	<a class="btn" title="New category" href="#/createQuizzCat"><span class="fa fa-plus"></span></a>
         </th>
@@ -23,6 +25,9 @@
 		    {{cat.percentageDone}}%
 		  </div>
 		</div>
+        </td>
+        <td ng-click="openCat()">
+        	{{cat.score}}/{{cat.questionsList.length}}
         </td>
         <td align="right" width="1%">
         	<button ng-click="restartCat(cat)" title="Restart" class="btn btn-success btn-sm" type="button"> <span class="fa fa-undo"></span> </button>

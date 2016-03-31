@@ -68,9 +68,9 @@ app.config(function ($routeProvider) {
         templateUrl: 'views/createQuizzCat.html',
         controller: 'CreateCatCtrl'
     })
-    .when('/noQuestions', {
+    .when('/noQuestions/:id', {
         templateUrl: 'views/noQuestion.html',
-        controller: 'CreateCatCtrl'
+        controller: 'quizzCatCtrl'
     })
     .when('/createQuizzQuest/:id', {
         templateUrl: 'views/createQuizzQuest.html',
@@ -189,7 +189,7 @@ app.controller('quizzCatCtrl', function ($scope, $http, $location, $routeParams)
 		$http.get('/api/v1/playCat/' + $scope.cat.id).success(function (data) {
 	        var id = data;
 	        if(id == 0){
-	        	$location.path('/noQuestions');
+	        	$location.path('/noQuestions/' + $scope.cat.id);
 	        }
 	        else{
 	        	$location.path('/quizzQuest/' + $scope.cat.id);
@@ -264,7 +264,7 @@ app.controller('selectQuestCtrl', function ($scope, $http, $location, $routePara
     	$http.get('/api/v1/findNextQuestion/' + $scope.catId).success(function (data) {
 	        var id = data;
 	        if(id == 0){
-	        	$location.path('/noQuestions');
+	        	$location.path('/noQuestions/' + $scope.cat.id);
 	        }
 	        else{
 	        	$http.get('/api/v1/quest/' + $scope.catId).success(function (data) {
