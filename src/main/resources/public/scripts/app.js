@@ -144,7 +144,7 @@ app.controller('CreateUserCtrl', function ($scope, $http, $location) {
 });
 
 
-app.controller('quizzCtrl', function ($scope, $http, $location) {
+app.controller('quizzCtrl', function ($scope, $http, $location, $route) {
 	$http.get('/api/v1/quizzCats').success(function (data) {
         $scope.cats = data;
     }).error(function (data, status) {
@@ -153,6 +153,15 @@ app.controller('quizzCtrl', function ($scope, $http, $location) {
     
     $scope.openCat = function (){
 		$location.path('/quizzCat/' + this.cat.id);
+	}
+	
+	$scope.deleteCat = function(cat){
+		$http.put('/api/v1/deleteCat/' + cat.id).success(function (data) {
+            console.log('category deleted');
+            $route.reload();
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
 	}
 });
 
@@ -181,7 +190,7 @@ app.controller('quizzCatCtrl', function ($scope, $http, $location, $routeParams)
 	    })
 	}
 	
-	$scope.deleteCat = function(question){
+	$scope.deleteQuest = function(question){
 		$http.put('/api/v1/deleteQuest/' + $scope.cat.id, question.id).success(function (data) {
             console.log('question deleted');
             $scope.cat = data;

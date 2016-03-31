@@ -89,4 +89,9 @@ public class QuizzCategoryService {
     	}
     	cat.setPercentageDone(percentage);
     }
+    
+    public void delete(String catId){
+    	QuizzCategory category = this.find(catId);
+    	ds.delete(category);
+    }
 }

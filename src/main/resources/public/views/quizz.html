@@ -1,24 +1,31 @@
-<h2>All categories <a class="btn btn-primary pull-right" href="#/createQuizzCat"><i
-        class="icon-plus-sign icon-white"></i> New category</a></h2>
+<h2 class="text-center">All categories</h2>
 
-<table class="table table-hover">
+<table class="table table-hover table-sm">
+	<thead class="thead">
     <tr>
         <th>
             Name
         </th>
         <th>Progress</th>
+        <th align="right" width="1%">
+        	<a class="btn" title="New category" href="#/createQuizzCat"><span class="fa fa-plus"></span></a>
+        </th>
     </tr>
-    <tr ng-repeat="cat in cats" ng-click="openCat()">
-        <td>
+    </thead>
+    <tr ng-repeat="cat in cats">
+        <td ng-click="openCat()">
             {{cat.name}}
         </td>
-        <td>
+        <td ng-click="openCat()">
         <div class="progress">
 		  <div class="progress-bar progress-bar-striped active" role="progressbar"
 		  aria-valuenow="{{cat.percentageDone}}" aria-valuemin="0" aria-valuemax="100" style="width:{{cat.percentageDone}}%">
 		    {{cat.percentageDone}}%
 		  </div>
 		</div>
+        </td>
+        <td align="right" width="1%">
+        	<button ng-click="deleteCat(cat)" title="Delete" class="btn btn-danger btn-sm" type="button"> <span class="fa fa-times"></span> </button>
         </td>
     </tr>
 </table>

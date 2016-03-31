@@ -2,6 +2,7 @@ package com.todoapp;
  
 import static spark.Spark.get;
 import static spark.Spark.post;
+import static spark.Spark.put;
 
 import spark.Request;
 import spark.Response;
@@ -48,6 +49,14 @@ public class QuizzCategoryResource {
             public Object handle(Request request, Response response) {
             	quizzCategoryService.createNewCat(request.body());
 	            response.status(201);
+	            return response;
+            }
+        }, new JsonTransformer());
+        
+        put(API_CONTEXT + "/deleteCat/:id", "application/json", new Route() {
+            public Object handle(Request request, Response response) { 
+            	quizzCategoryService.delete(request.params(":id"));
+            	response.status(201);
 	            return response;
             }
         }, new JsonTransformer());

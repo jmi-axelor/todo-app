@@ -4,13 +4,13 @@
 	<table class="table table-hover table-sm">
 	<thead class="thead-inverse">
 	<tr>
-		<td>
-        </td>
-        <td>
-        </td>
-        <td align="right">
+		<th>
+        </th>
+        <th>
+        </th>
+        <th align="right" width="1%">
         	<a class="btn" title="New question" href="#/createQuizzQuest/{{cat.id}}"><span class="fa fa-plus"></span></a>
-        </td>
+        </th>
 	</tr>
 	</thead>
 	    <tr ng-repeat="question in cat.questionsList">
@@ -20,8 +20,8 @@
 	        <td>
 	            {{question.question}}
 	        </td>
-	        <td align="right">
-	        	<button ng-click="deleteCat(question)" title="Delete" class="btn btn-danger btn-sm" type="button"> <span class="fa fa-times"></span> </button>
+	        <td align="right" width="1%">
+	        	<button ng-click="deleteQuest(question)" title="Delete" class="btn btn-danger btn-sm" type="button"> <span class="fa fa-times"></span> </button>
 	        </td>
 	    </tr>
 	</table>
