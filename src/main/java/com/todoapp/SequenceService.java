@@ -28,14 +28,15 @@ public class SequenceService {
         ds = morphia.createDatastore(mongoClient, dbName);
     }
     
-    public int getNextValue(Sequence sequence){
+    public int getNextValue(String className){
+    	Sequence sequence = findOrCreateSequence(className);
     	int value = sequence.getNextValue();
     	ds.save(sequence);
     	return value;
     }
     
     public Sequence findOrCreateSequence(String className) {
-    	Sequence sequence = ds.createQuery(Sequence.class).field("className").equal(className).get();
+    	Sequence sequence = ds.createQuery(Sequence.class).field("name").equal(className).get();
     	if(sequence == null){
     		sequence = new Sequence(className, 1);
     	}

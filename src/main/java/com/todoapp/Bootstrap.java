@@ -27,13 +27,11 @@ public class Bootstrap {
         staticFileLocation("/public");
         morphia.getMapper().getConverters().addConverter(BigDecimalConverter.class);
         SequenceService sequenceService = new SequenceService(mongo(), dbname, morphia);
-        Sequence questionSequence = sequenceService.findOrCreateSequence("QuizzQuestions");
-        Sequence categorySequence = sequenceService.findOrCreateSequence("QuizzCategory");
         new ToDoResource(new ToDoService(mongo(), dbname, morphia));
         new UserResource(new UserService(mongo(), dbname, morphia));
-        QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname, morphia, categorySequence, sequenceService);
+        QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname, morphia, sequenceService);
         new QuizzCategoryResource(quizzCategoryService);
-        new QuizzQuestionResource(new QuizzQuestionService(mongo(), dbname, morphia, quizzCategoryService, questionSequence, sequenceService));
+        new QuizzQuestionResource(new QuizzQuestionService(mongo(), dbname, morphia, quizzCategoryService, sequenceService));
     }
  
 	private static MongoClient mongo() throws Exception {

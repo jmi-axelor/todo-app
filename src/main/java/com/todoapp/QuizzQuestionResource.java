@@ -40,6 +40,12 @@ public class QuizzQuestionResource {
             	return quizzQuestionService.update(request.params(":id"), request.params(":questId"),request.body());
             }
         }, new JsonTransformer());
+        
+        put(API_CONTEXT + "/deleteQuest/:id", "application/json", new Route() {
+            public Object handle(Request request, Response response) { 
+            	return quizzQuestionService.delete(request.params(":id"), request.body());
+            }
+        }, new JsonTransformer());
     }
  
  

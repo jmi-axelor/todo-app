@@ -19,21 +19,19 @@ public class QuizzQuestionService {
     
     public final Datastore ds;
     public QuizzCategoryService quizzCategoryService;
-    public Sequence questionSequence;
     public SequenceService sequenceService;
     
-    public QuizzQuestionService(MongoClient mongoClient, String dbName, Morphia morphia, QuizzCategoryService quizzCategoryService, Sequence questionSequence, SequenceService sequenceService) {
+    public QuizzQuestionService(MongoClient mongoClient, String dbName, Morphia morphia, QuizzCategoryService quizzCategoryService, SequenceService sequenceService) {
         morphia.map(QuizzQuestions.class);
         ds = morphia.createDatastore(mongoClient, dbName);
         this.quizzCategoryService = quizzCategoryService;
-        this.questionSequence = questionSequence;
         this.sequenceService = sequenceService;
     }
  
     public void createNewQuest(String catId, String body) {
     	QuizzCategory category = quizzCategoryService.find(catId);
     	QuizzQuestions quest = new Gson().fromJson(body, QuizzQuestions.class);
-    	quest.setId(sequenceService.getNextValue(questionSequence));
+    	quest.setId(sequenceService.getNextValue(QuizzQuestions.class.getName()));
     	HashMap<String,String> map = new Gson().fromJson(body, new TypeToken<HashMap<String, String>>(){}.getType());
     	if(map.containsKey("propositions")){
     		String propositions = map.get("propositions");
@@ -85,5 +83,17 @@ public class QuizzQuestionService {
         	else return false;
     	}
     	return false;
+    }
+    
+    public QuizzCategory delete(String catId, String questId){
+    	QuizzCategory category = quizzCategoryService.find(catId);
+    	for (QuizzQuestions questIt : category.getQuizzQuestionsList()) {
+			if(questIt.getId() == Integer.valueOf(questId)){
+				category.getQuizzQuestionsList().remove(questIt);
+				quizzCategoryService.ds.save(category);
+				return category;
+			}
+		}
+    	return category;
     }
 }

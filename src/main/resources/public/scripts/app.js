@@ -180,6 +180,15 @@ app.controller('quizzCatCtrl', function ($scope, $http, $location, $routeParams)
 	        console.log('Error ' + data)
 	    })
 	}
+	
+	$scope.deleteCat = function(question){
+		$http.put('/api/v1/deleteQuest/' + $scope.cat.id, question.id).success(function (data) {
+            console.log('question deleted');
+            $scope.cat = data;
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+	}
 });
 
 app.controller('CreateCatCtrl', function ($scope, $http, $location) {

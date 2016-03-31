@@ -8,15 +8,15 @@ import org.mongodb.morphia.annotations.Id;
 public class Sequence {
 	@Id
 	private ObjectId id;
-	private String className;
+	private String name;
 	private int start;
 	
 	public Sequence(){
 		
 	}
 	
-	public Sequence(String className, int start){
-		this.className = className;
+	public Sequence(String name, int start){
+		this.name = name;
 		this.start = start;
 	}
 	
@@ -24,8 +24,8 @@ public class Sequence {
 		return start;
 	}
 	
-	public String getClassName(){
-		return className;
+	public String getName(){
+		return name;
 	}
 	
 	public int getNextValue(){

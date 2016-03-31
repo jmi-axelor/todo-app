@@ -23,13 +23,11 @@ public class QuizzCategoryService {
  
     
     public final Datastore ds;
-    public Sequence categorySequence;
     public SequenceService sequenceService;
  
-    public QuizzCategoryService(MongoClient mongoClient, String dbName, Morphia morphia, Sequence categorySequence, SequenceService sequenceService) {
+    public QuizzCategoryService(MongoClient mongoClient, String dbName, Morphia morphia, SequenceService sequenceService) {
         morphia.map(QuizzCategory.class);
         ds = morphia.createDatastore(mongoClient, dbName);
-        this.categorySequence = categorySequence;
         this.sequenceService = sequenceService;
     }
  
@@ -73,7 +71,7 @@ public class QuizzCategoryService {
     
     public void createNewCat(String body) {
     	QuizzCategory cat = new Gson().fromJson(body, QuizzCategory.class);
-    	cat.setId(sequenceService.getNextValue(categorySequence));
+    	cat.setId(sequenceService.getNextValue(QuizzCategory.class.getName()));
         ds.save(cat);
     }
     
