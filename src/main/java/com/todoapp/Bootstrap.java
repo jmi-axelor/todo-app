@@ -26,9 +26,9 @@ public class Bootstrap {
         setPort(PORT);
         staticFileLocation("/public");
         morphia.getMapper().getConverters().addConverter(BigDecimalConverter.class);
-        Sequence questionSequence = new Sequence("QuizzQuestions", 1);
-        Sequence categorySequence = new Sequence("QuizzCategory", 1);
         SequenceService sequenceService = new SequenceService(mongo(), dbname, morphia);
+        Sequence questionSequence = sequenceService.findOrCreateSequence("QuizzQuestions");
+        Sequence categorySequence = sequenceService.findOrCreateSequence("QuizzCategory");
         new ToDoResource(new ToDoService(mongo(), dbname, morphia));
         new UserResource(new UserService(mongo(), dbname, morphia));
         QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname, morphia, categorySequence, sequenceService);

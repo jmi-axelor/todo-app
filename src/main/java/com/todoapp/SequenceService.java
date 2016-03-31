@@ -33,4 +33,12 @@ public class SequenceService {
     	ds.save(sequence);
     	return value;
     }
+    
+    public Sequence findOrCreateSequence(String className) {
+    	Sequence sequence = ds.createQuery(Sequence.class).field("className").equal(className).get();
+    	if(sequence == null){
+    		sequence = new Sequence(className, 1);
+    	}
+    	return sequence;
+    }
 }
