@@ -20,10 +20,9 @@ import com.mongodb.MongoClient;
 public class ToDoService {
  
     
-    private final Morphia morphia;
     private final Datastore ds;
  
-    public ToDoService(MongoClient mongoClient, String dbName) {
+    public ToDoService(MongoClient mongoClient, String dbName, Morphia morphia) {
         morphia = new Morphia();
         morphia.map(ToDo.class);
         ds = morphia.createDatastore(mongoClient, dbName);

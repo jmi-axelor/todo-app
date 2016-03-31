@@ -20,11 +20,9 @@ import com.mongodb.MongoClient;
 public class UserService {
  
     
-    private final Morphia morphia;
     private final Datastore ds;
  
-    public UserService(MongoClient mongoClient, String dbName) {
-        morphia = new Morphia();
+    public UserService(MongoClient mongoClient, String dbName, Morphia morphia) {
         morphia.map(User.class);
         ds = morphia.createDatastore(mongoClient, dbName);
     }

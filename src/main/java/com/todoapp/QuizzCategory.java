@@ -1,5 +1,6 @@
 package com.todoapp;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class QuizzCategory {
 	private int id;
 	private String name;
 	private Date createdOn = new Date();
+	private BigDecimal percentageDone = BigDecimal.ZERO;
 	@Embedded
 	private List<QuizzQuestions> questionsList;
 	
@@ -41,5 +43,13 @@ public class QuizzCategory {
     
     public List<QuizzQuestions> getQuizzQuestionsList(){
     	return questionsList;
+    }
+    
+    public BigDecimal getPercentageDone(){
+    	return percentageDone;
+    }
+    
+    public void setPercentageDone(BigDecimal percentageDone){
+    	this.percentageDone = percentageDone;
     }
 }

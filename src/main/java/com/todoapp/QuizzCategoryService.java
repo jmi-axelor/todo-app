@@ -1,5 +1,7 @@
 package com.todoapp;
  
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,15 +22,15 @@ import com.mongodb.MongoClient;
 public class QuizzCategoryService {
  
     
-    private final Morphia morphia;
     public final Datastore ds;
-    Sequence categorySequence;
+    public Sequence categorySequence;
+    public SequenceService sequenceService;
  
-    public QuizzCategoryService(MongoClient mongoClient, String dbName, Sequence categorySequence) {
-        morphia = new Morphia();
+    public QuizzCategoryService(MongoClient mongoClient, String dbName, Morphia morphia, Sequence categorySequence, SequenceService sequenceService) {
         morphia.map(QuizzCategory.class);
         ds = morphia.createDatastore(mongoClient, dbName);
         this.categorySequence = categorySequence;
+        this.sequenceService = sequenceService;
     }
  
     public List<QuizzCategory> findAll() {
@@ -71,7 +73,22 @@ public class QuizzCategoryService {
     
     public void createNewCat(String body) {
     	QuizzCategory cat = new Gson().fromJson(body, QuizzCategory.class);
-    	cat.setId(categorySequence.getNextValue());
+    	cat.setId(sequenceService.getNextValue(categorySequence));
         ds.save(cat);
+    }
+    
+    public void computePercentageDone(QuizzCategory cat){
+    	int nbQuestsDone = 0;
+    	BigDecimal percentage = BigDecimal.ZERO;
+    	if(cat.getQuizzQuestionsList() != null && !cat.getQuizzQuestionsList().isEmpty()){
+    		for(QuizzQuestions quizzQuestion : cat.getQuizzQuestionsList()){
+        		if(quizzQuestion.getDone()){
+        			nbQuestsDone ++;
+        		}
+        	}
+    		percentage = new BigDecimal(nbQuestsDone).multiply(new BigDecimal(100))
+    							.divide(new BigDecimal(cat.getQuizzQuestionsList().size()), 2, RoundingMode.HALF_UP);
+    	}
+    	cat.setPercentageDone(percentage);
     }
 }

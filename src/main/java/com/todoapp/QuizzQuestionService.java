@@ -17,23 +17,23 @@ import com.mongodb.MongoClient;
 public class QuizzQuestionService {
  
     
-    private final Morphia morphia;
     public final Datastore ds;
     public QuizzCategoryService quizzCategoryService;
     public Sequence questionSequence;
+    public SequenceService sequenceService;
     
-    public QuizzQuestionService(MongoClient mongoClient, String dbName, QuizzCategoryService quizzCategoryService, Sequence questionSequence) {
-        morphia = new Morphia();
+    public QuizzQuestionService(MongoClient mongoClient, String dbName, Morphia morphia, QuizzCategoryService quizzCategoryService, Sequence questionSequence, SequenceService sequenceService) {
         morphia.map(QuizzQuestions.class);
         ds = morphia.createDatastore(mongoClient, dbName);
         this.quizzCategoryService = quizzCategoryService;
         this.questionSequence = questionSequence;
+        this.sequenceService = sequenceService;
     }
  
     public void createNewQuest(String catId, String body) {
     	QuizzCategory category = quizzCategoryService.find(catId);
     	QuizzQuestions quest = new Gson().fromJson(body, QuizzQuestions.class);
-    	quest.setId(questionSequence.getNextValue());
+    	quest.setId(sequenceService.getNextValue(questionSequence));
     	HashMap<String,String> map = new Gson().fromJson(body, new TypeToken<HashMap<String, String>>(){}.getType());
     	if(map.containsKey("propositions")){
     		String propositions = map.get("propositions");
@@ -77,6 +77,7 @@ public class QuizzQuestionService {
 		}
     	if(questSaved != null){
     		questSaved.setDone(true);
+    		quizzCategoryService.computePercentageDone(category);
     		quizzCategoryService.ds.save(category);
         	if(answer.equals(questSaved.getResponse())){
         		return true;

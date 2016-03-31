@@ -7,28 +7,33 @@ import static spark.SparkBase.staticFileLocation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mongodb.morphia.Morphia;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
- 
+
 public class Bootstrap {
  
 	private static final String IP_ADDRESS = System.getenv("OPENSHIFT_DIY_IP") != null ? System.getenv("OPENSHIFT_DIY_IP") : "localhost";
     private static final int PORT = System.getenv("OPENSHIFT_DIY_PORT") != null ? Integer.parseInt(System.getenv("OPENSHIFT_DIY_PORT")) : 8080;
     private static final String dbname = System.getenv("OPENSHIFT_APP_NAME") != null ? System.getenv("OPENSHIFT_APP_NAME") : "todoapp";
+    private static final Morphia morphia = new Morphia();
  
     public static void main(String[] args) throws Exception {
         setIpAddress(IP_ADDRESS);
         setPort(PORT);
         staticFileLocation("/public");
+        morphia.getMapper().getConverters().addConverter(BigDecimalConverter.class);
         Sequence questionSequence = new Sequence("QuizzQuestions", 1);
         Sequence categorySequence = new Sequence("QuizzCategory", 1);
-        new ToDoResource(new ToDoService(mongo(), dbname));
-        new UserResource(new UserService(mongo(), dbname));
-        QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname, categorySequence);
+        SequenceService sequenceService = new SequenceService(mongo(), dbname, morphia);
+        new ToDoResource(new ToDoService(mongo(), dbname, morphia));
+        new UserResource(new UserService(mongo(), dbname, morphia));
+        QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname, morphia, categorySequence, sequenceService);
         new QuizzCategoryResource(quizzCategoryService);
-        new QuizzQuestionResource(new QuizzQuestionService(mongo(), dbname, quizzCategoryService, questionSequence));
+        new QuizzQuestionResource(new QuizzQuestionService(mongo(), dbname, morphia, quizzCategoryService, questionSequence, sequenceService));
     }
  
 	private static MongoClient mongo() throws Exception {
