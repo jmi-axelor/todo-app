@@ -265,7 +265,7 @@ app.controller('selectQuestCtrl', function ($scope, $http, $location, $routePara
     	$http.get('/api/v1/findNextQuestion/' + $scope.catId).success(function (data) {
 	        var id = data;
 	        if(id == 0){
-	        	$location.path('/noQuestions/' + $scope.cat.id);
+	        	$location.path('/noQuestions/' + $scope.catId);
 	        }
 	        else{
 	        	$http.get('/api/v1/quest/' + $scope.catId).success(function (data) {
