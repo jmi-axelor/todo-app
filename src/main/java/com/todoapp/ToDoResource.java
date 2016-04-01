@@ -30,7 +30,7 @@ public class ToDoResource {
  
         get(API_CONTEXT + "/todos/:id", "application/json", new Route() {
             public Object handle(Request request, Response response) { 
-            	return todoService.find(request.params(":id"));
+            	return todoService.find(Integer.parseInt(request.params(":id")));
             }
         }, new JsonTransformer());
  
@@ -43,6 +43,14 @@ public class ToDoResource {
         put(API_CONTEXT + "/todos/:id", "application/json", new Route() {
             public Object handle(Request request, Response response) { 
             	return todoService.update(request.body());
+            }
+        }, new JsonTransformer());
+        
+        put(API_CONTEXT + "/delete/:id", "application/json", new Route() {
+            public Object handle(Request request, Response response) { 
+            	todoService.delete(Integer.parseInt(request.params(":id")));
+            	response.status(201);
+	            return response;
             }
         }, new JsonTransformer());
     }

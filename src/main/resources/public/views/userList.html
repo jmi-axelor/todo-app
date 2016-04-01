@@ -1,25 +1,28 @@
-<h2>All Users <a class="btn btn-primary pull-right" href="#/createUser"><i
-        class="icon-plus-sign icon-white"></i> New User</a></h2>
+<h2 class="text-center">All Users</h2>
 
 <table class="table table-hover">
+	<thead class="thead">
     <tr>
-        <th>
-            #
-        </th>
         <th>
             Name
         </th>
         <th>
             Created On
         </th>
+        <th align="right" width="1%">
+        	<a class="btn" title="New user" href="#/createUser"><span class="fa fa-plus"></span></a>
+        </th>
     </tr>
+    </thead>
     <tr ng-repeat="user in users">
-        <td>{{$index+1}}</td>
         <td>
             {{user.name}}
         </td>
         <td>
             {{user.createdOn |date:'medium'}}
+        </td>
+        <td align="right" width="1%">
+        	<button ng-click="deleteUser(user)" title="Delete" class="btn btn-danger btn-sm" type="button"> <span class="fa fa-times"></span> </button>
         </td>
     </tr>
 </table>

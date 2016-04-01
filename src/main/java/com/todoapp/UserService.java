@@ -1,19 +1,11 @@
 package com.todoapp;
  
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
 import com.google.gson.Gson;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 @SuppressWarnings("unused")
@@ -34,6 +26,7 @@ public class UserService {
  
     public void createNewUser(String body) {
         User user = new Gson().fromJson(body, User.class);
+        user.setPassword(CryptWithMD5.cryptWithMD5(user.getPassword()));
         ds.save(user);
     }
  
@@ -46,5 +39,10 @@ public class UserService {
         User savedUser = ds.get(User.class, id);
         //TODO
         return this.find(id);
+    }
+    
+    public void delete(String body){
+    	User user = new Gson().fromJson(body, User.class);
+    	ds.delete(user);
     }
 }

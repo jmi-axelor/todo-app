@@ -2,7 +2,6 @@ package com.todoapp;
  
 import java.util.Date;
 
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Reference;
@@ -10,7 +9,7 @@ import org.mongodb.morphia.annotations.Reference;
 @Entity
 public class ToDo {
 	@Id
-    private ObjectId id;
+	private int id;
     private String title;
     private boolean done;
     private Date createdOn = new Date();
@@ -21,7 +20,7 @@ public class ToDo {
     	
     }
     
-    public ObjectId getId(){
+    public int getId(){
     	return id;
     }
  
@@ -43,5 +42,9 @@ public class ToDo {
     
     public User getUser() {
     	return user;
+    }
+    
+    public void setId(int id){
+    	this.id = id;
     }
 }

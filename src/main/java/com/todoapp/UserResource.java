@@ -45,6 +45,14 @@ public class UserResource {
             	return userService.update(request.params(":id"), request.body());
             }
         }, new JsonTransformer());
+        
+        put(API_CONTEXT + "/delete", "application/json", new Route() {
+            public Object handle(Request request, Response response) { 
+            	userService.delete(request.body());
+            	response.status(201);
+	            return response;
+            }
+        }, new JsonTransformer());
     }
  
  

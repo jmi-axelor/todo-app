@@ -21,11 +21,13 @@ public class ToDoService {
  
     
     private final Datastore ds;
+    public SequenceService sequenceService; 
  
-    public ToDoService(MongoClient mongoClient, String dbName, Morphia morphia) {
+    public ToDoService(MongoClient mongoClient, String dbName, Morphia morphia, SequenceService sequenceService) {
         morphia = new Morphia();
         morphia.map(ToDo.class);
         ds = morphia.createDatastore(mongoClient, dbName);
+        this.sequenceService = sequenceService;
     }
  
     public List<ToDo> findAll() {
@@ -35,16 +37,21 @@ public class ToDoService {
  
     public void createNewTodo(String body) {
         ToDo todo = new Gson().fromJson(body, ToDo.class);
+        todo.setId(sequenceService.getNextValue(ToDo.class.getName()));
         ds.save(todo);
     }
  
-    public ToDo find(String id) {
+    public ToDo find(int id) {
         return ds.get(ToDo.class, id);
     }
  
     public ToDo update(String body) {
         ToDo todo = new Gson().fromJson(body, ToDo.class);
         ds.save(todo);
-        return this.find(todo.getId().toString());
+        return this.find(todo.getId());
+    }
+    
+    public void delete(int id) {
+        ds.delete(this.find(id));
     }
 }

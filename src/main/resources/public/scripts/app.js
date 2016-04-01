@@ -86,7 +86,7 @@ app.config(function ($routeProvider) {
     })
 });
  
-app.controller('ListCtrl', function ($scope, $http, $location) {
+app.controller('ListCtrl', function ($scope, $http, $location, $route) {
     $http.get('/api/v1/todos').success(function (data) {
         $scope.todos = data;
     }).error(function (data, status) {
@@ -97,6 +97,15 @@ app.controller('ListCtrl', function ($scope, $http, $location) {
         console.log(todo);
         $http.put('/api/v1/todos/' + todo.id, todo).success(function (data) {
             console.log('status changed');
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+    }
+    
+    $scope.deleteToDo = function (todo) {
+    	$http.put('/api/v1/delete/' + todo.id).success(function (data) {
+            console.log('todo deleted');
+            $route.reload();
         }).error(function (data, status) {
             console.log('Error ' + data)
         })
@@ -124,12 +133,21 @@ app.controller('CreateCtrl', function ($scope, $http, $location) {
 });
 
 
-app.controller('UserListCtrl', function ($scope, $http) {
+app.controller('UserListCtrl', function ($scope, $http, $route) {
     $http.get('/api/v1/users').success(function (data) {
         $scope.users = data;
     }).error(function (data, status) {
         console.log('Error ' + data)
     })
+    
+    $scope.deleteUser = function (user) {
+    	$http.put('/api/v1/delete', user).success(function (data) {
+            console.log('user deleted');
+            $route.reload();
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+    }
 });
  
 app.controller('CreateUserCtrl', function ($scope, $http, $location) {
