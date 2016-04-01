@@ -6,7 +6,8 @@ var app = angular.module('todoapp', [
     'ngCookies',
     'ngResource',
     'ngSanitize',
-    'ngRoute'
+    'ngRoute',
+    'ngAnimate'
 ]);
 
 $(document).ready(function () {
