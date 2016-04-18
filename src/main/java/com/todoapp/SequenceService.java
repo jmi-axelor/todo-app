@@ -23,7 +23,6 @@ public class SequenceService {
     private final Datastore ds;
  
     public SequenceService(MongoClient mongoClient, String dbName, Morphia morphia) {
-        morphia = new Morphia();
         morphia.map(Sequence.class);
         ds = morphia.createDatastore(mongoClient, dbName);
     }

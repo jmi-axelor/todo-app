@@ -81,6 +81,18 @@ app.config(function ($routeProvider) {
         templateUrl: 'views/quizzQuest.html',
         controller: 'selectQuestCtrl'
     })
+    .when('/todo/:id', {
+        templateUrl: 'views/todo.html',
+        controller: 'todoCtrl'
+    })
+    .when('/createTask/:id', {
+        templateUrl: 'views/createTask.html',
+        controller: 'CreateTaskCtrl'
+    })
+    .when('/task/:todoId/:taskId', {
+        templateUrl: 'views/task.html',
+        controller: 'taskCtrl'
+    })
     .otherwise({
         redirectTo: '/todoList'
     })
@@ -97,6 +109,7 @@ app.controller('ListCtrl', function ($scope, $http, $location, $route) {
         console.log(todo);
         $http.put('/api/v1/todos/' + todo.id, todo).success(function (data) {
             console.log('status changed');
+            $route.reload();
         }).error(function (data, status) {
             console.log('Error ' + data)
         })
@@ -109,6 +122,10 @@ app.controller('ListCtrl', function ($scope, $http, $location, $route) {
         }).error(function (data, status) {
             console.log('Error ' + data)
         })
+    }
+    
+    $scope.openTodo = function (todo) {
+    	$location.path('/todo/' + this.todo.id);
     }
     
 });
@@ -296,5 +313,76 @@ app.controller('selectQuestCtrl', function ($scope, $http, $location, $routePara
 	    }).error(function (data, status) {
 	        console.log('Error ' + data)
 	    })
+    }
+});
+
+app.controller('todoCtrl', function ($scope, $http, $location, $routeParams, $route) {
+	
+	$http.get('/api/v1/users').success(function (data) {
+		$scope.users = data;
+	});
+	
+	$http.get('/api/v1/todos/' + $routeParams.id).success(function (data) {
+        $scope.todo = data;
+    }).error(function (data, status) {
+        console.log('Error ' + data)
+    })
+    
+    $scope.taskDoneChanged = function(task){
+		$http.put('/api/v1/taskDone/' + $scope.todo.id, task).success(function (data) {
+            console.log('task changed');
+            $route.reload();
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+	}
+	
+	$scope.openTask = function (task) {
+    	$location.path('/task/' + $routeParams.id + '/' + task.id);
+    }
+});
+
+app.controller('CreateTaskCtrl', function ($scope, $http, $location, $routeParams) {
+    $scope.task = {
+        done: false
+    };
+    
+	$http.get('/api/v1/users').success(function (data) {
+		$scope.users = data;
+	});
+    
+    $scope.createTask = function () {
+        console.log($scope.task);
+        $http.post('/api/v1/newTask/' + $routeParams.id, $scope.task).success(function (data) {
+            $location.path('/todo/' + $routeParams.id);
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+    }
+});
+
+app.controller('taskCtrl', function ($scope, $http, $location, $routeParams, $route) {
+	
+	$http.get('/api/v1/users').success(function (data) {
+		$scope.users = data;
+	});
+	
+	$http.get('/api/v1/task/' + $routeParams.todoId + '/' + $routeParams.taskId).success(function (data) {
+        $scope.task = data;
+    }).error(function (data, status) {
+        console.log('Error ' + data)
+    })
+    
+    $scope.taskDoneChanged = function(task2){
+		$http.put('/api/v1/taskDone/' + $scope.todoId, task2).success(function (data) {
+            console.log('task changed');
+            $route.reload();
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+	}
+	
+	$scope.openTask = function (task2) {
+    	$location.path('/task/' + this.$routeParams.todoId + '/' + this.task2.id);
     }
 });

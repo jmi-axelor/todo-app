@@ -27,7 +27,9 @@ public class Bootstrap {
         staticFileLocation("/public");
         morphia.getMapper().getConverters().addConverter(BigDecimalConverter.class);
         SequenceService sequenceService = new SequenceService(mongo(), dbname, morphia);
-        new ToDoResource(new ToDoService(mongo(), dbname, morphia, sequenceService));
+        TaskService taskService = new TaskService(mongo(), dbname, morphia, sequenceService);
+        new TaskResource(taskService);
+        new ToDoResource(new ToDoService(mongo(), dbname, morphia, sequenceService, taskService));
         new UserResource(new UserService(mongo(), dbname, morphia));
         QuizzCategoryService quizzCategoryService = new QuizzCategoryService(mongo(), dbname, morphia, sequenceService);
         new QuizzCategoryResource(quizzCategoryService);

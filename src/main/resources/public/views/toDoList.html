@@ -20,13 +20,13 @@
     </tr>
     </thead>
     <tr ng-repeat="todo in todos">
-        <td>
+        <td ng-click="openTodo(todo)">
             {{todo.title}}
         </td>
-        <td>
+        <td ng-click="openTodo(todo)">
             {{todo.createdOn |date:'medium'}}
         </td>
-        <td>
+        <td ng-click="openTodo(todo)">
             {{todo.user.name}}
         </td>
         <td>
@@ -35,8 +35,8 @@
         <td>
 	        <div class="progress">
 			  <div class="progress-bar progress-bar-striped active" role="progressbar"
-			  aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-			    40%
+			  aria-valuenow="{{todo.progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{todo.progress}}%">
+			    {{todo.progress}}%
 			  </div>
 			</div>
         </td>

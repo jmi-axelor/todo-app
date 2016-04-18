@@ -1,0 +1,75 @@
+<h2 class="text-center">{{todo.title}}</h2>
+<div class="container">
+	<h3 class="text-center text-primary">ToDo</h3>
+	<div class="panel-group">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<label for="title" class="col-sm-2 control-label">Title</label>
+			
+			    <div class="col-sm-10">
+			        <input type="text" class="form-control" id="title" placeholder="Write todo.." ng-model="todo.title">
+			    </div>
+			    
+			    <label for="title" class="col-sm-2 control-label">User</label>
+			
+			    <div class="col-sm-10">
+			        <select ng-model="todo.user" class="form-control" ng-options="user.name for user in users"></select>
+			    </div>
+			    
+				<label for="progress" class="col-sm-2 control-label">Progress</label>
+			    
+				<div class="progress col-sm-10">
+					<div class="progress-bar progress-bar-striped active" role="progressbar"
+							aria-valuenow="{{todo.progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{todo.progress}}%">
+				    		{{todo.progress}}%
+				  	</div>
+				</div>
+			</div>
+		</div>
+	    
+	    <div class="panel panel-default">
+	  		<div class="panel-heading">Tasks</div>
+	  		<div class="panel-body">
+				<table class="table table-hover table-sm">
+				<thead class="thead-inverse">
+					<tr>
+						<th>
+				        </th>
+				        <th>
+				        </th>
+				        <th>
+				        </th>
+				        <th>
+				        </th>
+				        <th align="right" width="1%">
+				        	<a class="btn" title="New task" href="#/createTask/{{todo.id}}"><span class="fa fa-plus"></span></a>
+				        </th>
+					</tr>
+				</thead>
+				    <tr ng-repeat="task in todo.taskList">
+				        <td ng-click="openTask(task)">
+				            {{task.title}}
+				        </td>
+				        <td ng-click="openTask(task)">
+				            {{task.user.name}}
+				        </td>
+				        <td>
+				            <input type="checkbox" ng-change="taskDoneChanged(task)" ng-value="task.done" ng-model="task.done">
+				        </td>
+				        <td ng-click="openTask(task)">
+					        <div class="progress">
+							  <div class="progress-bar progress-bar-striped active" role="progressbar"
+							  aria-valuenow="{{task.progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{task.progress}}%">
+							    {{task.progress}}%
+							  </div>
+							</div>
+				        </td>
+				        <td align="right" width="1%">
+				        	<button ng-click="deleteTask(task)" title="Delete" class="btn btn-danger btn-sm" type="button"> <span class="fa fa-times"></span> </button>
+				        </td>
+				    </tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
