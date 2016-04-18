@@ -6,7 +6,6 @@ import java.math.RoundingMode;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
-import com.google.inject.Inject;
 import com.mongodb.MongoClient;
 
 public class TaskService {
