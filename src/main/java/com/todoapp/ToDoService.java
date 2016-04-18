@@ -111,4 +111,20 @@ public class ToDoService {
     	this.computeProgress(todo);
     	ds.save(todo);
     }
+    
+    public void createNewTask(int todoId, int taskId, String body) {
+    	ToDo todo = this.find(todoId);
+    	Task parentTask = taskService.find(todo, taskId);
+    	Task task = new Gson().fromJson(body, Task.class);
+    	task.setProgress(BigDecimal.ZERO);
+    	task.setId(sequenceService.getNextValue(Task.class.getName()));
+    	List<Task> taskList = parentTask.getTaskList();
+    	if(taskList == null){
+    		taskList = new ArrayList<Task>();
+    	}
+    	taskList.add(task);
+    	parentTask.setTaskList(taskList);
+    	this.computeProgress(todo);
+    	ds.save(todo);
+    }
 }

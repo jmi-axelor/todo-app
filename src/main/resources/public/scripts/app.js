@@ -93,6 +93,10 @@ app.config(function ($routeProvider) {
         templateUrl: 'views/task.html',
         controller: 'taskCtrl'
     })
+    .when('/newTask/:todoId/:taskId', {
+        templateUrl: 'views/createTask.html',
+        controller: 'CreateTaskCtrl'
+    })
     .otherwise({
         redirectTo: '/todoList'
     })
@@ -340,6 +344,16 @@ app.controller('todoCtrl', function ($scope, $http, $location, $routeParams, $ro
 	$scope.openTask = function (task) {
     	$location.path('/task/' + $routeParams.id + '/' + task.id);
     }
+	
+	$scope.todoStatusChanged = function (todo) {
+        console.log(todo);
+        $http.put('/api/v1/todos/' + todo.id, todo).success(function (data) {
+            console.log('status changed');
+            $route.reload();
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+    }
 });
 
 app.controller('CreateTaskCtrl', function ($scope, $http, $location, $routeParams) {
@@ -353,11 +367,20 @@ app.controller('CreateTaskCtrl', function ($scope, $http, $location, $routeParam
     
     $scope.createTask = function () {
         console.log($scope.task);
-        $http.post('/api/v1/newTask/' + $routeParams.id, $scope.task).success(function (data) {
-            $location.path('/todo/' + $routeParams.id);
-        }).error(function (data, status) {
-            console.log('Error ' + data)
-        })
+        if($routeParams.todoId == null){
+        	$http.post('/api/v1/newTask/' + $routeParams.id, $scope.task).success(function (data) {
+                $location.path('/todo/' + $routeParams.id);
+            }).error(function (data, status) {
+                console.log('Error ' + data)
+            })
+        }
+        else{
+        	$http.post('/api/v1/newTask/' + $routeParams.todoId + '/' + $routeParams.taskId, $scope.task).success(function (data) {
+                $location.path('/task/' + $routeParams.todoId + '/' + $routeParams.taskId);
+            }).error(function (data, status) {
+                console.log('Error ' + data)
+            })
+        }
     }
 });
 
@@ -385,4 +408,8 @@ app.controller('taskCtrl', function ($scope, $http, $location, $routeParams, $ro
 	$scope.openTask = function (task2) {
     	$location.path('/task/' + this.$routeParams.todoId + '/' + this.task2.id);
     }
+	
+	$scope.createTask = function (task2) {
+		$location.path('/newTask/' + $routeParams.todoId + '/' + task2.id);
+	}
 });

@@ -69,6 +69,15 @@ public class ToDoResource {
 	            return response;
             }
         }, new JsonTransformer());
+        
+        post(API_CONTEXT + "/newTask/:todoId/:taskId", "application/json", new Route() {
+            public Object handle(Request request, Response response) {
+        		todoService.createNewTask(Integer.parseInt(request.params(":todoId")), Integer.parseInt(request.params(":taskId")), request.body());
+        		response.status(201);
+	            
+	            return response;
+            }
+        }, new JsonTransformer());
     }
  
  

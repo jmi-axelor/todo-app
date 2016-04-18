@@ -18,13 +18,45 @@ public class TaskService {
         ds = morphia.createDatastore(mongoClient, dbName);
         this.sequenceService = sequenceService;
     }
-    
     public Task find(int todoId, int taskId){
     	ToDo todo = ds.find(ToDo.class, "_id", todoId).get();
+    	return this.find(todo, taskId);
+    }
+    
+    public Task find(ToDo todo, int taskId){
+    	Task taskFound = null;
+    	if(todo.getTaskList() == null){
+    		return null;
+    	}
     	for (Task task : todo.getTaskList()) {
 			if(task.getId() == taskId){
 				return task;
 			}
+		}
+    	for (Task task : todo.getTaskList()) {
+    		taskFound = this.findTaskInTask(task, taskId);
+    		if(taskFound != null){
+    			return taskFound;
+    		}
+    	}
+    	return null;
+    }
+    
+    public Task findTaskInTask(Task task, int taskId){
+    	Task taskFound = null;
+    	if(task.getTaskList() == null){
+    		return null;
+    	}
+    	for (Task taskIt : task.getTaskList()) {
+			if(taskIt.getId() == taskId){
+				return taskIt;
+			}
+		}
+    	for (Task taskIt : task.getTaskList()) {
+			taskFound = this.findTaskInTask(taskIt, taskId);
+			if(taskFound != null){
+    			return taskFound;
+    		}
 		}
     	return null;
     }
