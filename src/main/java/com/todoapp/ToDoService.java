@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
 
 import com.google.gson.Gson;
 import com.mongodb.MongoClient;
@@ -80,21 +78,24 @@ public class ToDoService {
     
     public void taskDone(int todoId, String taskJson){
     	Task task = new Gson().fromJson(taskJson, Task.class);
+    	ToDo todo = this.find(todoId);
+    	Task persistedTask = taskService.find(todo, task.getId());
     	if(task.getDone()){
-    		task.setProgress(new BigDecimal(100));
+    		persistedTask.setDone(true);
+    		persistedTask.setProgress(new BigDecimal(100));
+    		taskService.setDoneForChilds(persistedTask);
     	}
     	else{
-    		task.setProgress(BigDecimal.ZERO);
-    		task.setProgress(taskService.computeProgress(task));
-    		Query<ToDo> query = ds.createQuery(ToDo.class).field("_id").equal(todoId);
-        	UpdateOperations<ToDo> ops = ds.createUpdateOperations(ToDo.class).set("done", false);
-        	ds.update(query, ops);
+    		persistedTask.setDone(false);
+    		persistedTask.setProgress(BigDecimal.ZERO);
+    		persistedTask.setProgress(taskService.computeProgress(persistedTask));
+    		taskService.setUndoneForParents(todo, persistedTask);
     	}
-    	//Find task, update it and compute all progressions
-    	Query<ToDo> query = ds.createQuery(ToDo.class).field("_id").equal(todoId).field("taskList.id").equal(task.getId());
-    	UpdateOperations<ToDo> ops = ds.createUpdateOperations(ToDo.class).set("taskList.$", task);
-    	ds.update(query, ops);
-    	this.computeProgress(this.find(todoId));
+//		Find task, update it and compute all progressions
+//		Query<ToDo> query = ds.createQuery(ToDo.class).field("_id").equal(todoId).field("taskList.id").equal(task.getId());
+//		UpdateOperations<ToDo> ops = ds.createUpdateOperations(ToDo.class).set("taskList.$", task);
+    	ds.save(todo);
+    	this.computeProgress(todo);
     }
     
     public void createNewTask(String todoId, String body) {
@@ -124,6 +125,13 @@ public class ToDoService {
     	}
     	taskList.add(task);
     	parentTask.setTaskList(taskList);
+    	this.computeProgress(todo);
+    	ds.save(todo);
+    }
+    
+    public void deleteTask(int todoId, int taskId){
+    	ToDo todo = this.find(todoId);
+    	todo = taskService.delete(todo, taskId);
     	this.computeProgress(todo);
     	ds.save(todo);
     }

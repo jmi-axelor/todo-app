@@ -1,6 +1,6 @@
 <h2 class="text-center">{{task.title}}</h2>
 <div class="container">
-	<h3 class="text-center text-primary">ToDo</h3>
+	<h3 class="text-center text-primary">Task</h3>
 	<div class="panel-group">
 		<div class="panel panel-default">
 			<div class="panel-body">
@@ -13,7 +13,7 @@
 			    <label for="title" class="col-sm-2 control-label">User</label>
 			
 			    <div class="col-sm-10">
-			        <select ng-model="task.user" class="form-control" ng-options="user.name for user in users"></select>
+			        <select ng-model="task.user" class="form-control" ng-options="user.name for user in users track by user.name"></select>
 			    </div>
 			    
 			    <label for="progress" class="col-sm-2 control-label">Progress</label>

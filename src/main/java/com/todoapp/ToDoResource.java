@@ -3,6 +3,7 @@ package com.todoapp;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
+import static spark.Spark.delete;
 
 import spark.Request;
 import spark.Response;
@@ -73,6 +74,15 @@ public class ToDoResource {
         post(API_CONTEXT + "/newTask/:todoId/:taskId", "application/json", new Route() {
             public Object handle(Request request, Response response) {
         		todoService.createNewTask(Integer.parseInt(request.params(":todoId")), Integer.parseInt(request.params(":taskId")), request.body());
+        		response.status(201);
+	            
+	            return response;
+            }
+        }, new JsonTransformer());
+        
+        delete(API_CONTEXT + "/deleteTask/:todoId/:taskId", "application/json", new Route() {
+            public Object handle(Request request, Response response) {
+        		todoService.deleteTask(Integer.parseInt(request.params(":todoId")), Integer.parseInt(request.params(":taskId")));
         		response.status(201);
 	            
 	            return response;

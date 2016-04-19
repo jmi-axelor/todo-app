@@ -354,6 +354,16 @@ app.controller('todoCtrl', function ($scope, $http, $location, $routeParams, $ro
             console.log('Error ' + data)
         })
     }
+	
+	$scope.deleteTask = function (task) {
+    	$http.delete('/api/v1/deleteTask/' + $routeParams.id + '/' + task.id).success(function (data) {
+            console.log('task deleted');
+            $route.reload();
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+    }
+	
 });
 
 app.controller('CreateTaskCtrl', function ($scope, $http, $location, $routeParams) {
@@ -397,7 +407,7 @@ app.controller('taskCtrl', function ($scope, $http, $location, $routeParams, $ro
     })
     
     $scope.taskDoneChanged = function(task2){
-		$http.put('/api/v1/taskDone/' + $scope.todoId, task2).success(function (data) {
+		$http.put('/api/v1/taskDone/' + $routeParams.todoId, task2).success(function (data) {
             console.log('task changed');
             $route.reload();
         }).error(function (data, status) {
@@ -406,10 +416,19 @@ app.controller('taskCtrl', function ($scope, $http, $location, $routeParams, $ro
 	}
 	
 	$scope.openTask = function (task2) {
-    	$location.path('/task/' + this.$routeParams.todoId + '/' + this.task2.id);
+    	$location.path('/task/' + $routeParams.todoId + '/' + task2.id);
     }
 	
 	$scope.createTask = function (task2) {
 		$location.path('/newTask/' + $routeParams.todoId + '/' + task2.id);
 	}
+	
+	$scope.deleteTask = function (task2) {
+    	$http.delete('/api/v1/deleteTask/' + $routeParams.todoId + '/' + task2.id).success(function (data) {
+            console.log('task deleted');
+            $route.reload();
+        }).error(function (data, status) {
+            console.log('Error ' + data)
+        })
+    }
 });
