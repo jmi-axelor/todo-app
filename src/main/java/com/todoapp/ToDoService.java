@@ -103,6 +103,7 @@ public class ToDoService {
     	Task task = new Gson().fromJson(body, Task.class);
     	task.setProgress(BigDecimal.ZERO);
     	task.setId(sequenceService.getNextValue(Task.class.getName()));
+    	task.setParentTodoId(Integer.parseInt(todoId));
     	List<Task> taskList = todo.getTaskList();
     	if(taskList == null){
     		taskList = new ArrayList<Task>();
@@ -119,6 +120,8 @@ public class ToDoService {
     	Task task = new Gson().fromJson(body, Task.class);
     	task.setProgress(BigDecimal.ZERO);
     	task.setId(sequenceService.getNextValue(Task.class.getName()));
+    	task.setParentTaskId(taskId);
+    	task.setParentTodoId(todoId);
     	List<Task> taskList = parentTask.getTaskList();
     	if(taskList == null){
     		taskList = new ArrayList<Task>();

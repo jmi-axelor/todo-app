@@ -18,6 +18,8 @@ public class Task {
     private User user;
     @Embedded
     private List<Task> taskList;
+    private int parentTodoId;
+    private int parentTaskId;
     
     public Task(){
     	
@@ -65,5 +67,21 @@ public class Task {
     
     public List<Task> getTaskList(){
     	return taskList;
+    }
+    
+    public void setParentTodoId(int parentTodoId){
+    	this.parentTodoId = parentTodoId;
+    }
+    
+    public int getParentTodoId(){
+    	return this.parentTodoId;
+    }
+    
+    public void setParentTaskId(int parentTaskId){
+    	this.parentTaskId = parentTaskId;
+    }
+    
+    public int getParentTaskId(){
+    	return this.parentTaskId;
     }
 }

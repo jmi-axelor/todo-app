@@ -402,6 +402,12 @@ app.controller('taskCtrl', function ($scope, $http, $location, $routeParams, $ro
 	
 	$http.get('/api/v1/task/' + $routeParams.todoId + '/' + $routeParams.taskId).success(function (data) {
         $scope.task = data;
+        if(data.parentTaskId == 0){
+        	$scope.parentLink = 'todo/' + data.parentTodoId;
+        }
+        else{
+        	$scope.parentLink = 'task/' + data.parentTodoId + '/' + data.parentTaskId;
+        }
     }).error(function (data, status) {
         console.log('Error ' + data)
     })
