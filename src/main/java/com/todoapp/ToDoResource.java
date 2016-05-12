@@ -37,6 +37,9 @@ public class ToDoResource {
  
         get(API_CONTEXT + "/todos", "application/json", new Route() {
             public Object handle(Request request, Response response) { 
+		        if(request.session().attribute("username") == null){
+		     		return false;
+		     	}
             	return todoService.findAll();
             }
         }, new JsonTransformer());

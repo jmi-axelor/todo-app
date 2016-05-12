@@ -39,7 +39,7 @@ $(document).ready(function () {
 	  }); 
 	  
 });
- 
+
 app.config(function ($routeProvider) {
     $routeProvider.when('/todoList', {
         templateUrl: 'views/toDoList.html',
@@ -97,18 +97,52 @@ app.config(function ($routeProvider) {
         templateUrl: 'views/createTask.html',
         controller: 'CreateTaskCtrl'
     })
+    .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'loginCtrl'
+    })
+    .when('/singOut', {
+        templateUrl: 'views/login.html',
+        controller: 'signOutCtrl'
+    })
     .otherwise({
         redirectTo: '/todoList'
     })
 });
+
+app.run(['$rootScope', '$location', '$http',function($rootScope, $location, $http) {
+
+    $rootScope.$on('$locationChangeStart', function (event, next, current) {
+    // redirect to login page if not logged in and trying to access a restricted page
+    if($location.path() != '/login' ){
+        
+        $http.get('/api/v1/testLogin').success(function (data) {
+        	if(data == 'true'){
+        		$rootScope.loggedIn = true;
+                $http.get('/api/v1/userConnected').success(function (data) {
+                	if(data && data != 'null')
+                		$rootScope.userConnected = data.replace(/"/g, '');
+                	else $rootScope.userConnected = null;
+                })
+        	}
+        	else{
+        		$rootScope.loggedIn = false;
+                $location.path('/login');
+        	}
+        })
+    }
+    
+    });
+}]);
  
-app.controller('ListCtrl', function ($scope, $http, $location, $route) {
+app.controller('ListCtrl', function ($scope, $http, $location, $route, $rootScope) {
+	
     $http.get('/api/v1/todos').success(function (data) {
-        $scope.todos = data;
+    	$scope.todos = data;
     }).error(function (data, status) {
         console.log('Error ' + data)
     })
- 
+    
     $scope.todoStatusChanged = function (todo) {
         console.log(todo);
         $http.put('/api/v1/todos/' + todo.id, todo).success(function (data) {
@@ -437,4 +471,24 @@ app.controller('taskCtrl', function ($scope, $http, $location, $routeParams, $ro
             console.log('Error ' + data)
         })
     }
+});
+
+app.controller('loginCtrl', function ($scope, $http, $location, $rootScope) {
+	$scope.logOk = true;
+    $scope.login = function () {
+        $http.put('/api/v1/login', $scope.user).success(function (data) {
+        	$rootScope.loggedIn = true;
+        	$location.path('/todoList');
+        }).error(function (data, status) {
+        	$scope.logOk = false;
+        })
+    }
+});
+
+app.controller('signOutCtrl', function ($scope, $http, $location, $rootScope) {
+	$scope.logOk = false;
+    $http.put('/api/v1/signOut').success(function (data) {
+    	$rootScope.loggedIn = false;
+    	$location.path('/');
+    })
 });

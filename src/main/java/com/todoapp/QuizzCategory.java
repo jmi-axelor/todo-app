@@ -5,14 +5,12 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 @Entity
 public class QuizzCategory {
-	private ObjectId objectId;
 	@Id
 	private int id;
 	private String name;

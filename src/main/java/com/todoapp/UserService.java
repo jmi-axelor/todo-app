@@ -45,4 +45,16 @@ public class UserService {
     	User user = new Gson().fromJson(body, User.class);
     	ds.delete(user);
     }
+    
+    public boolean checkPassword(User user){
+    	User persistedUser = ds.find(User.class, "login", user.getLogin()).get();
+    	if(persistedUser != null && persistedUser.getPassword().equals(CryptWithMD5.cryptWithMD5(user.getPassword()))){
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public User findUserWithLogin(String login){
+    	return ds.find(User.class, "login", login).get();
+    }
 }
